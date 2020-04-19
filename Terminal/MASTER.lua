@@ -3,7 +3,7 @@
 script["Open Me!!!"]:Destroy() wait(1)
 
 
-
+ 
 
 
 
