@@ -1,0 +1,65 @@
+--[[
+	
+	
+	Common Errors
+	Some erros have been patched, fixed or checked by the script. Some issues may arrise that are not listed here. If that occurs please contact cmn65 on twitter @roblox_cmn65 or PM me!
+	
+	I really just run into errors while testing and add it here in case someone needs help!
+	
+	
+	
+	
+	
+	
+	Often times these problems can occur and may hard to debug for beginners. 
+	
+	1.   15:33:21.672 - Requested module experienced an error while loading
+		 15:33:21.673 - Stack Begin
+		 15:33:21.673 - Script 'ServerScriptService.Cmn65's Raiding Terminal', Line 12
+		 15:33:21.673 - Stack End
+		
+		
+		This error is due to the Configuration module not loading correctly. 
+		Common ways to resolve this are:
+		- Making sure no weird lines (especially RED lines) are in the script.
+		- terminalPart is directed to a part that does not exist. Make sure this part is in the game or call :WaitForChild() to wait for the terminal to be created
+		
+		
+	2.   15:36:50.335 - StandardPages: Request Failed because HTTP 400 (BadRequest)
+		 15:36:50.335 - Stack Begin
+		 15:36:50.335 - Script 'ServerScriptService.Cmn65's Raiding Terminal', Line 127
+		 15:36:50.335 - Stack End
+		
+		
+		This error is due to misconfiguration in the configuration file. The groupId is invalid. Make sure you have the correct ID. 
+		This is not a userId from a player but a groupId found in the URL of the groups page
+
+		Example: https://www.roblox.com/groups/72321/The-First-Encounter-Assault-Recon#!/about     In this URL the number 72321 is the groupId. 
+		
+		
+	3.	 16:24:52.875 - [Cmn65's Raid Terminal V:0.1-1]: [WARNING]: Player File for [cmn65] was not found when indexing!
+	
+		No player folder was found for the handler usually casued by playing in a solo-test run in Studio. 
+		Also caused by the newPlayer() function not seeing a new player joining. 
+		
+		To resolve this warning the player folder nees to be manually inserted. 
+	
+	
+	
+	
+	4. Server message pops up saying the terminal broke
+	
+		This is usually due to the script having corrupted values on variables. To fix this you should allow your terminal to fix itself 
+		To do this enable AutoFix in the configuration. The problem should go away. 
+		
+	
+	
+	
+	
+	Known Problems:
+	- If you change team while inside the terminal, the script will attempt an auto-fix once the player exits the terminal. 
+	
+	
+	
+	--]]
+	
