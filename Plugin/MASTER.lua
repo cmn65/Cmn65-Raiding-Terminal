@@ -3,18 +3,29 @@
 --// Thank you to @ROBLOX for the StudioWidget UI collection. Without them I would have to make a very crappy library of Gui objects. Link: https://github.com/Roblox/StudioWidgets
 
 wait(0.1)
-print([[
-	
-Cmn65's Raiding Terminal is loading...
+print([[==================================================================================================
+============================[ Cmn65's Raiding Terminal Plugin (Version 0.1-3) ]============================
+==================================================================================================
+!-- BETA: This version was stable enough to be released to the public however some issues may arrise!
 >> Please report issues to cmn65 through PM on ROBLOX or through a tweet @roblox_cmn65 on Twitter!
 
->> To Use This Plugin:
-1.) Right Click in studio
-2.) Click on "Cmn65's Raiding Terminal Configuration" to open the configuration widget
-3.) Edit the configuration fields to your needs
-4.) Click the INJECT button and your terminal is good to go!
+PLUGIN RIBBON:
+>> Click the GEAR icon to open the current configuration script
+>> Click the QUESTION MARK icon to open the help/info Gui
 
-]])
+WDIGET:
+>> Click INJECT to download & install the terminal to your base
+>> Click UPDATE to update the terminal if an update is available
+>> Click REMOVE to remove the terminal from the game
+
+SOURCE CODE:
+>> https://github.com/cmn65/Cmn65-Raiding-Terminal
+
+SUPPORT/BUGS:
+>> Documentation/Install Script in the Terminal Model
+>> https://www.roblox.com/messages/compose?recipientId=16568982
+>> https://www.twitter.com/roblox_cmn65
+==================================================================================================  ]])
 
 local toolbar = plugin:CreateToolbar("Cmn65's Group Raid Terminal")
 
@@ -36,6 +47,7 @@ local StatefullImageButton = require(StudioWidgets.StatefulImageButton)
 local VerticallyScalingListFrame = require(StudioWidgets.VerticallyScalingListFrame)
 
 local configButton = toolbar:CreateButton(1, "Open Current Configuration", "rbxassetid://4902906761", "Open Current Configuration")
+local helpButton = toolbar:CreateButton(2, "Open Help Gui", "rbxassetid://4920427782", "Open Help Gui")
 
 local teamColorChoices = {
 	{Id = "Black", Text = "Black"},
@@ -147,7 +159,31 @@ basicsettingsFrame:AddChild(WidgetObjects.UpdateTerminalButton:GetButton())
 basicsettingsFrame:AddBottomPadding()
 basicsettingsFrame:GetFrame().Parent = testWidget
 
+function openCurrentConfigFile()
+	if game.ServerScriptService:FindFirstChild(modelName) ~= nil then
+		plugin:OpenScript(game.ServerScriptService[modelName].Configuration)
+	else
+		print()
+		warn("[ERROR]: No terminal is installed. If you are trying to open the Configuration menu to set-up the terminal then rich click this button and click on Cmn65's Radiing Terminal Configuration")
+		print()
+	end
+end
+configButton.Click:connect(openCurrentConfigFile)
 
+local toggle = false
+function toggleHelpGui()
+	if game:GetService("CoreGui"):FindFirstChild("terminal_help_gui") == nil then
+		script.terminal_help_gui:clone().Parent = game:GetService("CoreGui")
+	end
+	if toggle == false then
+		toggle = true
+		game:GetService("CoreGui").terminal_help_gui.Enabled = true
+	else
+		toggle = false
+		game:GetService("CoreGui").terminal_help_gui.Enabled = false
+	end
+end
+helpButton.Click:connect(toggleHelpGui)
 
 function BUILD_SOURCE_CODE()
 	print(">>[SOURCE_CODE]: Building...")
@@ -203,13 +239,16 @@ function SET_VARS()
 end
 
 function INJECT_TERMINAL()
-	print("Cmn65's Raiding Terminal is being injected into the game... Two steps (BUILD/INJECT) will occur. BUILD will check your configuration, INJECT will download and place the terminal and then write the configuration file. I will let you know when we are done! ")
+	print("\n")
+	warn("Cmn65's Raiding Terminal is being injected into the game... Two steps (BUILD/INJECT) will occur. BUILD will check your configuration, INJECT will download and place the terminal and then write the configuration file. I will let you know when we are done! ")
+	print()
 	print(">> [BUILD]: Checking to make sure configuration values are of correct type...")
 	--// Run through config and check for errors
 	local prebuild = true
 	local check1 = {WidgetObjects.setting_groupID, WidgetObjects.setting_adminRank, WidgetObjects.setting_totalTime, WidgetObjects.setting_raidTime, WidgetObjects.setting_raidersNeeded, WidgetObjects.setting_defendersNeeded} --#
 	
 	for i = 1, #check1 do
+		wait(0.1)
 		if tonumber(check1[i]:GetValue()) == nil then
 			check1[i]:SetValue("ERROR: Must be a NUMBER")
 			prebuild = false
@@ -222,6 +261,7 @@ function INJECT_TERMINAL()
 	end
 	
 	if prebuild == false then error("[BUILD]: Failed") else
+		wait(0.2)
 		--// Backup old terminal (if there is one...)
 		print(">>[BUILD]: Success... moving to injection (this is the real bug step)")
 		print(">>[INJECT]: Checking for previously configured terminals...")
@@ -238,9 +278,11 @@ function INJECT_TERMINAL()
 			end
 		end
 		
+		wait(0.1)
 		--// Insert new updated Terminal
 		print(">>[INJECT]: Downloading latest version of the terminal...")
 		local newModel = game:GetService("InsertService"):LoadAsset(4879413218)
+		wait(0.2)
 		print(">>[INJECT]: Checking for correct contents...")
 		if newModel:FindFirstChild(modelName) == nil or newModel:FindFirstChild("Cmn65's Raiding Terminal Gui") == nil then error("[INJECT]: Failed - Could not find expected contents. This is usually due to a mis-match in naming. PM Cmn65 to get this resolved!") end
 		local terminal = newModel:FindFirstChild(modelName)
@@ -249,6 +291,7 @@ function INJECT_TERMINAL()
 		gui.Parent = game.StarterGui
 		terminal.Parent = game.ServerScriptService
 		print(">>[INJECT]: Attempting to write to contents of terminal.Configuration. This is where the fun begins...")
+		wait(math.random(1, 1.5))
 		terminal.Configuration:Destroy()
 		local configModule = Instance.new("ModuleScript", terminal)
 		configModule.Name = "Configuration"
@@ -259,13 +302,16 @@ function INJECT_TERMINAL()
 		print(">>[INJECT]: Configuration module generated and placed into the terminal script.")
 		print(">>[INJECT]: You are READY! Please make sure you proof read your configuration script to make sure it is correct! Press the Open Configuration button in the plugins menu to see your current configuration!")
 		print(">>Cleaning up...")
+		wait(0.1)
 		newModel:Destroy()
 		warn("Cmn65's Raiding Terminal is ready for use! Thank you very much for using, and please PM me with any bugs concerning this plugin or the model itself! Or tweet @roblox_cmn65!")
 	end
+	print()
 end
 WidgetObjects.InjectTerminalButton:GetButton().MouseButton1Click:connect(INJECT_TERMINAL)
 
 function removeTerminal()
+	print()
 	print("[REMOVE]: Removing terminal...")
 	if game.ServerScriptService:FindFirstChild(modelName) then
 		game.ServerScriptService:FindFirstChild(modelName):Destroy()
@@ -274,10 +320,12 @@ function removeTerminal()
 		game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui"):Destroy()
 	end
 	print("[REMOVE]: Terminal removed.")
+	print()
 end
 WidgetObjects.RemoveTerminalButton:GetButton().MouseButton1Click:connect(removeTerminal)
 
 function updateTerminal()
+	print()
 	print("[UPDATE]: Updating raid terminal...")
 	local newModel = game:GetService("InsertService"):LoadAsset(4879413218)
 	local oldModel = game.ServerScriptService:FindFirstChild(modelName)
@@ -348,6 +396,6 @@ function updateTerminal()
 			warn("[UPDATE]: ERROR: An unknown error occured. Please try this again, if the problem persists please follow this link and file a bug report: https://www.roblox.com/messages/compose?recipientId=16568982")
 		end
 	end
-	
+	print()
 end
 WidgetObjects.UpdateTerminalButton:GetButton().MouseButton1Click:connect(updateTerminal)
