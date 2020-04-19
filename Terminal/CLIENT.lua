@@ -22,7 +22,7 @@ script.Parent.BackFrame.Visible = false
 
 local captureTime = 0
 
-
+ 
 function endgameGui(homePlayerDictionary, raiderPlayerDictionary, allyPlayerDictionary, homeScore, raiderScore, allyScore, winner)	
 	
 	local home_uiGridLayout = script.Parent.SecondFrame.HomeTeamFrame.ScrollingFrame.UIListLayout
