@@ -1,0 +1,80 @@
+--[[
+	FOR REPORTING BUGS, QUESTIONS OR COMMENTS PLEASE CONTACT ME ON...
+	roblox: @cmn65 or @fusi0nscripter
+	twitter: @roblox_cmn65
+	
+	
+	
+	DOCUMENTATION
+	
+	This documentation has been revised for version 0.3-x
+	
+	
+	What does it do?
+	This script and accompanying Gui will allow easy-to-install raiding functionality to any group base. 
+	
+	The terminal has the following capabilities and features:
+	- End-game Gui to show who won and all player scores with respective teams
+	- Raiding progress bar with drop-down stats field
+	- Player Banning
+	- Control over raiding elements such as total raid time, time to raid a terminal, team colors and your group's team name.
+	- Support in filtering enabled games (99% less hax! :D)
+	- Auto-Update
+	- Super easy to set-up
+	- Works in virtually any base design
+	
+	
+	
+	Prerequisites for Installation:
+	- Ability to modify a configuration script
+	- Ability to construct a Union Operation (Commonly called Unions)
+	
+	
+	
+	
+	
+	
+	
+INSTALLATION --->				Installation (very easy!)
+INSTALLATION --->				1.) Place the main script (Cmn65's Raiding Terminal) in game.ServerScriptService
+INSTALLATION --->				2.) Place the Gui (Cmn65's Raiding Terminal Gui) in game.StarterGui
+INSTALLATION --->				3.) Place your union operation in the location of the base that is to be secured. This is your terminal. 
+INSTALLATION --->				4.) Edit the Configuration module. It is important that the following rules are followed:
+INSTALLATION --->					- groupId must be greater than or equal to 0. 
+INSTALLATION --->					- terminalPart must be a directed location to the terminal object. 
+INSTALLATION --->						Ex: If the terminal part is in the Workspace, then the terminalPart variables should equal game.Workspace.TerminalPartNameHere
+INSTALLATION --->						- If you are unsure on how to do this then create your union operation and make sure it is directly in game.Workspace. DO NOT model it. Name the part TERMINAL. 
+INSTALLATION --->				5.) Done! Have fun raiding!
+	
+	
+	
+	
+	
+	
+	
+	Raiding Rules:
+	1.) The total riad timer is paused when the raiders control the terminal. It is unpaused when raiders <= defenders in the terminal
+	2.) The raiders must have majority control of the terminal for <raidingTime> seconds to win. 
+	3.) Capture progress goes dwon when the defenders hold the terminal
+	4.) If the defenders hold the terminal without the raiders winning then they win. If the raiders capture the terminal for <raidingTime> then they win. 
+	
+	Post-Raid:
+	1.) All players will have a Gui displayed with all player scores. 
+	2.) Respawning after the raid kicks you, new players joining once the raid is over will be kicked automatically. 
+	3.) After 10 minutes all players will be kicked, shutting down the server
+	
+	
+	Proper Configuration Tips:
+	- Do not make the raidingTime more than the totalTime. This usually results in an unfair advantage to the defenders!
+	- Do not make the groupId less than or equal to zero
+	- auto-update is a good way to maintain to the most up to date code available. 
+	
+	
+	Important Information:
+	- Players that are not defined as a team member for the teams created by the terminal script will NOT be considered a raiding party. Ie: If they aren't on the defending/raiding/ally team then they will not count in the raid
+	- The script will work with any team changing. The player will need to leave and re-enter the terminal for the team change to take effect with the terminal
+	- Currently admin is NOT supported. Do not worry about this variable in the configuration!
+	
+	
+	
+--]]
