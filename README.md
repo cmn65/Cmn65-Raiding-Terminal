@@ -1,4 +1,5 @@
 Cmn65's Raiding Terminal
+Report bugs to cmn65 on ROBLOX (shorturl.at/lCJY4) or @roblox_cmn65 on twitter (shorturl.at/mDW45)
 
 Open source script handlers and modules for my raiding terminal and install plugin. 
 
