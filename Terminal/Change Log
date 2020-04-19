@@ -1,0 +1,101 @@
+--[[
+	
+	
+	
+	
+	
+	Cmn65's Raiding Terminal
+	Change Log
+	
+	
+	
+	
+	
+	
+	
+-->	Version 0.1-1
+		- Initial Release
+
+-->	Version 0.2-1
+		- Added script corruption prevention. 
+			> The script will attempt to fix itself when it finds variables holding values they should not have. 
+		- Added better logic for terminal detection
+		- Added Team Change detection for players to keep player files up to current time
+		
+		>> Bugs Fixed:
+		* The script would often get inaccurate game-breaking data causing in-accurate raid results. This has been fixed in version 0.2-1. 
+		* The script would error when groupId is set to 0 or below. This has been fixed by giving more information on how to fix the error. 
+		* Fixed an issue were auto-update would often fail or the odl terminal would run its thread in parralell with the new terminal. 
+		* Fixed a issue where the Gui would not show the correct winner
+
+-->	Version 0.3-1
+		- Added a stats Gui. 
+			> This Gui is in BETA. Stats on the drop down menu do not work yet. 
+			> Percent progress bar DOES work. 
+		
+-->> Version 0.3-2
+		- Added Stats for Gui
+		- Improved script logic on client
+		- Improved script logic on server
+		- minor bug fixes and improvements
+		
+		Known Issues: 
+		- Documentation is out of date and needs to be rewritten. 
+		- Gui position and size may be mis-calculated on some clients
+		- Script can possibly error in rare occasions when a player's team is changed when inside the terminal. 
+
+-->> Version 0.3-3
+		- Rewrote documentation and installation instructions
+		
+		Known Issues: 
+		- Gui position and size may be mis-calculated on some clients
+		- Script can possibly error in rare occasions when a player's team is changed when inside the terminal. 
+		
+-->> Version 0.3-4
+		- Fixed an issue where roblox would kill the script when waiting for the appropriate amount of players.
+		
+		Known Issues: 
+		- Gui position and size may be mis-calculated on some clients
+		- Script can possibly error in rare occasions when a player's team is changed when inside the terminal. 
+	
+	
+
+	
+		
+			
+				
+		
+			
+		Soon to Come...
+		- Code optimization and cleanup
+		- Admin commands to control the raid more effeciently
+		- Admin Gui to show raid stats with specifics regarding players
+		- More intuitive team stats gui for team leaders to monitor players
+		
+		Have an Idea? Tweet @roblox_cmn65 or PM cmn65/fusi0nscripter on www.ROBLOX.com!	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+--]]
+	
+	
