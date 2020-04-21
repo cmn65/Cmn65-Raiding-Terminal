@@ -3,29 +3,8 @@
 --// Thank you to @ROBLOX for the StudioWidget UI collection. Without them I would have to make a very crappy library of Gui objects. Link: https://github.com/Roblox/StudioWidgets
 
 wait(0.1)
-print([[==================================================================================================
-============================[ Cmn65's Raiding Terminal Plugin (Version 0.1-3) ]============================
-==================================================================================================
-!-- BETA: This version was stable enough to be released to the public however some issues may arrise!
->> Please report issues to cmn65 through PM on ROBLOX or through a tweet @roblox_cmn65 on Twitter!
 
-PLUGIN RIBBON:
->> Click the GEAR icon to open the current configuration script
->> Click the QUESTION MARK icon to open the help/info Gui
-
-WDIGET:
->> Click INJECT to download & install the terminal to your base
->> Click UPDATE to update the terminal if an update is available
->> Click REMOVE to remove the terminal from the game
-
-SOURCE CODE:
->> https://github.com/cmn65/Cmn65-Raiding-Terminal
-
-SUPPORT/BUGS:
->> Documentation/Install Script in the Terminal Model
->> https://www.roblox.com/messages/compose?recipientId=16568982
->> https://www.twitter.com/roblox_cmn65
-==================================================================================================  ]])
+local pluginVersion = "0.1-2"
 
 local toolbar = plugin:CreateToolbar("Cmn65's Group Raid Terminal")
 
@@ -81,12 +60,9 @@ local definedConfiguration = {
 	['developer'] = false;
 }
 
+			
 
-
-
-
-
-
+--// Create Widget Window
 local widgetInfo = DockWidgetPluginGuiInfo.new( Enum.InitialDockState.Left, true, true,  -- Don't override the previous enabled state
 	300,    -- X Default width of the floating window
 	300,    -- Y Default height of the floating window
@@ -158,6 +134,34 @@ basicsettingsFrame:AddChild(WidgetObjects.UpdateTerminalButton:GetButton())
 
 basicsettingsFrame:AddBottomPadding()
 basicsettingsFrame:GetFrame().Parent = testWidget
+local helpGui = script.terminal_help_gui
+helpGui.Parent = game:GetService("CoreGui")
+helpGui.Enabled = false
+
+
+
+function updateVersionHeader()
+	local versionCheckModel = game:GetService("InsertService"):LoadAsset(4879413218)
+	local oldVersionStr = "NO TERMINAL INSTALLED!"
+	if game.ServerScriptService:FindFirstChild(modelName) then
+		oldVersionStr = "Terminal Version: " .. tostring(require(game.ServerScriptService:FindFirstChild(modelName).buildInfo).version .. "-" .. tostring(require(game.ServerScriptService:FindFirstChild(modelName).buildInfo).build)) .. " | Plugin Version: " .. pluginVersion
+		local newModel = versionCheckModel
+		local oldModel = game.ServerScriptService:FindFirstChild(modelName)
+		local newBuildInfo, newConfigurationModule = require(newModel[modelName].buildInfo), require(newModel[modelName].Configuration)
+		local oldBuildInfo, oldConfigurationModule = require(oldModel.buildInfo), require(oldModel.Configuration)
+		local newTerminal = newModel[modelName]
+		local newVersionAvailable = false
+				
+		if newBuildInfo.version > oldBuildInfo.version then newVersionAvailable = true end -- new major
+		if newBuildInfo.version == oldBuildInfo.version and newBuildInfo.build > oldBuildInfo.build then newVersionAvailable = true end -- new minor
+		
+		if newVersionAvailable == true then
+			oldVersionStr = oldVersionStr .. "\n[Terminal Update " .. tostring(require(versionCheckModel["Cmn65's Raiding Terminal"].buildInfo).version) .. "-" .. tostring(require(versionCheckModel["Cmn65's Raiding Terminal"].buildInfo).build) .. " Available]"
+		end
+	end
+	helpGui.Frame.version.Text = oldVersionStr
+end
+updateVersionHeader()
 
 function openCurrentConfigFile()
 	if game.ServerScriptService:FindFirstChild(modelName) ~= nil then
@@ -172,9 +176,6 @@ configButton.Click:connect(openCurrentConfigFile)
 
 local toggle = false
 function toggleHelpGui()
-	if game:GetService("CoreGui"):FindFirstChild("terminal_help_gui") == nil then
-		script.terminal_help_gui:clone().Parent = game:GetService("CoreGui")
-	end
 	if toggle == false then
 		toggle = true
 		game:GetService("CoreGui").terminal_help_gui.Enabled = true
@@ -303,6 +304,7 @@ function INJECT_TERMINAL()
 		print(">>[INJECT]: You are READY! Please make sure you proof read your configuration script to make sure it is correct! Press the Open Configuration button in the plugins menu to see your current configuration!")
 		print(">>Cleaning up...")
 		wait(0.1)
+		updateVersionHeader()
 		newModel:Destroy()
 		warn("Cmn65's Raiding Terminal is ready for use! Thank you very much for using, and please PM me with any bugs concerning this plugin or the model itself! Or tweet @roblox_cmn65!")
 	end
@@ -320,6 +322,7 @@ function removeTerminal()
 		game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui"):Destroy()
 	end
 	print("[REMOVE]: Terminal removed.")
+	updateVersionHeader()
 	print()
 end
 WidgetObjects.RemoveTerminalButton:GetButton().MouseButton1Click:connect(removeTerminal)
@@ -382,6 +385,7 @@ function updateTerminal()
 				newModel:Destroy()
 				if errors == "" then warn("[UPDATE]: Complete with no errors") else warn("[UPDATE]: Complete with some errors. Please verify update/installation!") end
 				errors = ""
+				updateVersionHeader()
 			else
 				newModel:Destroy()
 				warn("[UPDATE]: Error: No available updates.")
@@ -399,3 +403,167 @@ function updateTerminal()
 	print()
 end
 WidgetObjects.UpdateTerminalButton:GetButton().MouseButton1Click:connect(updateTerminal)
+
+script.DescendantRemoving:Connect(function()
+	helpGui:Destroy()
+end)
+
+--// Help Gui Functions and Code
+
+--// Nothing in this portion of the script will be ran until the helpgui is opened for the first time. Then this code will be activated. 
+
+-- Define Variables
+mainFrame = helpGui.Frame
+
+guiButtons = {
+	devinfoButton = mainFrame.devinfo;
+	installationButton = mainFrame.installation;
+	rulesButton = mainFrame.rules;
+	troubleshootButton = mainFrame.troubleshooting;
+	informationButton = mainFrame.information;
+}
+
+guiFrames = {
+	informationFrame = mainFrame.informationFrame;
+	installationFrame = mainFrame.installationFrame;
+	rulesFrame = mainFrame.rulesFrame;
+	troubleshootFrame = mainFrame.troubleshootingFrame;
+	devinfoFrame = mainFrame.devinfoFrame;
+}
+
+
+currentFrameOpen = nil
+
+
+
+-- Hover Main Menu button Color Changer
+function changeColor(buttonObject, bool)
+	if bool == true then
+		buttonObject.Style = Enum.ButtonStyle.RobloxRoundDefaultButton
+	else
+		buttonObject.Style = Enum.ButtonStyle.RobloxRoundDropdownButton
+	end
+end
+
+--// Call changecolor(object, true) to enable blue cells
+guiButtons.devinfoButton.MouseEnter:Connect(function()
+	changeColor(guiButtons.devinfoButton, true)
+end)
+guiButtons.installationButton.MouseEnter:Connect(function()
+	changeColor(guiButtons.installationButton, true)
+end)
+guiButtons.rulesButton.MouseEnter:Connect(function()
+	changeColor(guiButtons.rulesButton, true)
+end)
+guiButtons.troubleshootButton.MouseEnter:Connect(function()
+	changeColor(guiButtons.troubleshootButton, true)
+end)
+guiButtons.informationButton.MouseEnter:Connect(function()
+	changeColor(guiButtons.informationButton, true)
+end)
+
+--// Call changecolor(object, false) to disable blue cells
+guiButtons.devinfoButton.MouseLeave:Connect(function()
+	changeColor(guiButtons.devinfoButton, false)
+end)
+guiButtons.installationButton.MouseLeave:Connect(function()
+	changeColor(guiButtons.installationButton, false)
+end)
+guiButtons.rulesButton.MouseLeave:Connect(function()
+	changeColor(guiButtons.rulesButton, false)
+end)
+guiButtons.troubleshootButton.MouseLeave:Connect(function()
+	changeColor(guiButtons.troubleshootButton, false)
+end)
+guiButtons.informationButton.MouseLeave:Connect(function()
+	changeColor(guiButtons.informationButton, false)
+end)
+
+--// Handle going to Main Menu
+function goToMainMenu()
+	for i, v in pairs(guiButtons) do
+		print(v.Name .. " making visible")
+		v.Visible = true
+	end
+	mainFrame.menu.Visible = false
+	for i, v in pairs(guiFrames) do
+		v.Visible = false
+	end
+	mainFrame.subtitle.Text = "Choose a Topic"
+end
+mainFrame.menu.MouseButton1Down:connect(goToMainMenu)
+
+function frameOpening(frameOpenObject)
+	for i, v in pairs(guiButtons) do
+		print(v.Name .. " making invisible")
+		v.Visible = false
+	end
+	mainFrame.menu.Visible = true
+	for i, v in pairs(guiFrames) do
+		v.Visible = false
+	end
+end
+
+guiButtons.informationButton.MouseButton1Down:Connect(function()
+	frameOpening(guiFrames.informationFrame)
+	guiFrames.informationFrame.Visible = true
+	mainFrame.subtitle.Text = "Information"
+end)
+guiButtons.installationButton.MouseButton1Down:Connect(function()
+	frameOpening(guiFrames.installationFrame)
+	guiFrames.installationFrame.Visible = true
+	mainFrame.subtitle.Text = "Installing CRT"
+end)
+guiButtons.rulesButton.MouseButton1Down:Connect(function()
+	frameOpening(guiFrames.rulesFrame)
+	guiFrames.rulesFrame.Visible = true
+	mainFrame.subtitle.Text = "Terminal Rules"
+end)
+guiButtons.troubleshootButton.MouseButton1Down:Connect(function()
+	frameOpening(guiFrames.troubleshootFrame)
+	guiFrames.troubleshootFrame.Visible = true
+	mainFrame.subtitle.Text = "Configuration Help"
+end)
+guiButtons.devinfoButton.MouseButton1Down:Connect(function()
+	frameOpening(guiFrames.devinfoFrame)
+	guiFrames.devinfoFrame.Visible = true
+	mainFrame.subtitle.Text = "CRT Developer Information"
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--// Bootloader. This will only showif the rest of the script didn't error. 
+print([[==================================================================================================
+============================[ Cmn65's Raiding Terminal Plugin (Version ]] .. pluginVersion .. [[]) ]============================
+==================================================================================================
+!-- BETA: This version was stable enough to be released to the public however some issues may arrise!
+>> Please report issues to cmn65 through PM on ROBLOX or through a tweet @roblox_cmn65 on Twitter!
+
+PLUGIN RIBBON:
+>> Click the GEAR icon to open the current configuration script
+>> Click the QUESTION MARK icon to open the help/info Gui
+
+WDIGET:
+>> Click INJECT to download & install the terminal to your base
+>> Click UPDATE to update the terminal if an update is available
+>> Click REMOVE to remove the terminal from the game
+
+SOURCE CODE:
+>> https://github.com/cmn65/Cmn65-Raiding-Terminal
+
+SUPPORT/BUGS:
+>> Documentation/Install Script in the Terminal Model
+>> https://www.roblox.com/messages/compose?recipientId=16568982
+>> https://www.twitter.com/roblox_cmn65
+==================================================================================================  ]])
