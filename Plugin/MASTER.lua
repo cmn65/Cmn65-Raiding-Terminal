@@ -1,10 +1,10 @@
---// Source Code -- Version 0.1-1
+--// Source Code
 --// Very choppy and sketchy UI. I will be adjusting the open-source modules to my needs sooner or later! :)
 --// Thank you to @ROBLOX for the StudioWidget UI collection. Without them I would have to make a very crappy library of Gui objects. Link: https://github.com/Roblox/StudioWidgets
 
 wait(0.1)
 
-local pluginVersion = "0.1-2"
+local pluginVersion = "0.1-4"
 
 local toolbar = plugin:CreateToolbar("Cmn65's Group Raid Terminal")
 
@@ -140,7 +140,7 @@ helpGui.Enabled = false
 
 
 
-function updateVersionHeader()
+function updateVersionHeader() -- Basically an edited version of hte UPDATE_TERMINA() function down below. This is only used to get info aboutthe version and possible updates
 	local versionCheckModel = game:GetService("InsertService"):LoadAsset(4879413218)
 	local oldVersionStr = "NO TERMINAL INSTALLED!"
 	if game.ServerScriptService:FindFirstChild(modelName) then
@@ -160,6 +160,7 @@ function updateVersionHeader()
 		end
 	end
 	helpGui.Frame.version.Text = oldVersionStr
+	versionCheckModel:Destroy()
 end
 updateVersionHeader()
 
