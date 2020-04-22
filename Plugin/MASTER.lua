@@ -76,6 +76,59 @@ local definedConfiguration = {
 helpGui.Parent = game:GetService("CoreGui")
 helpGui.Enabled = false
 
+
+--// Plugin Output Frame
+local outputListFrame = helpGui.outputFrame.listFrame
+local UIListLayout_output = outputListFrame.UIListLayout
+
+
+
+function Print(text)
+	local newOutput = Instance.new("TextLabel")
+	newOutput.Parent = script.Parent
+	newOutput.Size = UDim2.new(0.98,0,0,20)
+	newOutput.Position = UDim2.new(0.02,0,0,0)
+	newOutput.TextColor3 = Color3.new(0,0,0)
+	newOutput.TextSize = 10
+	newOutput.TextWrapped = true
+	newOutput.TextXAlignment = Enum.TextXAlignment.Left
+	newOutput.TextYAlignment = Enum.TextYAlignment.Top
+	newOutput.BackgroundTransparency = 1
+	newOutput.Parent = outputListFrame
+	newOutput.Text = "> " .. text
+	print(text)
+end
+function Warn(text)
+	local newOutput = Instance.new("TextLabel")
+	newOutput.Parent = script.Parent
+	newOutput.Size = UDim2.new(0.98,0,0,20)
+	newOutput.Position = UDim2.new(0.02,0,0,0)
+	newOutput.TextColor3 = Color3.new(192,112,56)
+	newOutput.TextSize = 10
+	newOutput.TextWrapped = true
+	newOutput.TextXAlignment = Enum.TextXAlignment.Left
+	newOutput.TextYAlignment = Enum.TextYAlignment.Top
+	newOutput.BackgroundTransparency = 1
+	newOutput.Parent = outputListFrame
+	newOutput.Text = ">" .. text
+	warn(text)
+end
+function Error(text)
+	local newOutput = Instance.new("TextLabel")
+	newOutput.Parent = script.Parent
+	newOutput.Size = UDim2.new(0.98,0,0,20)
+	newOutput.Position = UDim2.new(0.02,0,0,0)
+	newOutput.TextColor3 = Color3.new(255,0,0)
+	newOutput.TextSize = 10
+	newOutput.TextWrapped = true
+	newOutput.TextXAlignment = Enum.TextXAlignment.Left
+	newOutput.TextYAlignment = Enum.TextYAlignment.Top
+	newOutput.BackgroundTransparency = 1
+	newOutput.Parent = outputListFrame
+	newOutput.Text = "> [ERROR]: " .. text
+	error(text)
+end
+
 function updateVersionHeader() -- Basically an edited version of hte UPDATE_TERMINA() function down below. This is only used to get info aboutthe version and possible updates
 	local versionCheckModel = game:GetService("InsertService"):LoadAsset(4879413218)
 	local oldVersionStr = "NO TERMINAL INSTALLED!"
@@ -104,9 +157,9 @@ function openCurrentConfigFile()
 	if game.ServerScriptService:FindFirstChild(modelName) ~= nil then
 		plugin:OpenScript(game.ServerScriptService[modelName].Configuration)
 	else
-		print()
-		warn("[ERROR]: No terminal is installed. If you are trying to open the Configuration menu to set-up the terminal then rich click this button and click on Cmn65's Radiing Terminal Configuration")
-		print()
+		Print("")
+		Warn("[ERROR]: No terminal is installed. If you are trying to open the Configuration menu to set-up the terminal then rich click this button and click on Cmn65's Radiing Terminal Configuration")
+		Print("")
 	end
 end
 openConfigButton.Click:connect(openCurrentConfigFile)
@@ -124,7 +177,7 @@ end
 helpButton.Click:connect(toggleHelpGui)
 
 function BUILD_SOURCE_CODE()
-	print(">>[SOURCE_CODE]: Building...")
+	Print(">>[SOURCE_CODE]: Building...")
 	local bannedPlayersStr = "bannedPlayers = {"
 	for key, value in pairs(definedConfiguration) do -- Format values for numbers and bools (easy)
 		if string.find(key, "TeamColor") == nil and key ~= "bannedPlayers" then
@@ -147,7 +200,7 @@ function BUILD_SOURCE_CODE()
 	CONFIGURATION_SOURCE_CODE = CONFIGURATION_SOURCE_CODE .. "\n	--// Banned Players (By NAME or PLAYER ID)"
 	CONFIGURATION_SOURCE_CODE = CONFIGURATION_SOURCE_CODE .. "\n	" .. bannedPlayersStr .. ";"
 	CONFIGURATION_SOURCE_CODE = CONFIGURATION_SOURCE_CODE .. "\n}\nreturn configuration"
-	print(">>[SOURCE_CODE]: Done!")
+	Print(">>[SOURCE_CODE]: Done!")
 end
 
 function SET_VARS()
@@ -163,10 +216,10 @@ function SET_VARS()
 end
 
 function INJECT_TERMINAL()
-	print("\n")
-	warn("Cmn65's Raiding Terminal is being injected into the game... Two steps (BUILD/INJECT) will occur. BUILD will check your configuration, INJECT will download and place the terminal and then write the configuration file. I will let you know when we are done! ")
-	print()
-	print(">> [BUILD]: Checking to make sure configuration values are of correct type...")
+	Print("\n")
+	Warn("Cmn65's Raiding Terminal is being injected into the game... Two steps (BUILD/INJECT) will occur. BUILD will check your configuration, INJECT will download and place the terminal and then write the configuration file. I will let you know when we are done! ")
+	Print("")
+	Print(">> [BUILD]: Checking to make sure configuration values are of correct type...")
 	--// Run through config and check for errors
 	local prebuild = true
 	local check1 = {configButtons.groupIdButton, configButtons.adminRankButton, configButtons.minDefendersNeededButton, configButtons.minRaidersNeededButton, configButtons.totalTimeButton, configButtons.captureTimeButton} --#
@@ -184,13 +237,13 @@ function INJECT_TERMINAL()
 		end
 	end
 	
-	if prebuild == false then error("[BUILD]: Failed.\nDid you forget to configure a value, remember to scroll down the config list!") else
+	if prebuild == false then Error("[BUILD]: Failed.\nDid you forget to configure a value, remember to scroll down the config list!") else
 		wait(0.2)
 		--// Backup old terminal (if there is one...)
-		print(">>[BUILD]: Success... moving to injection (this is the real bug step)")
-		print(">>[INJECT]: Checking for previously configured terminals...")
+		Print(">>[BUILD]: Success... moving to injection (this is the real bug step)")
+		Print(">>[INJECT]: Checking for previously configured terminals...")
 		if game.ServerScriptService:FindFirstChild(modelName) then
-			print(">>[INJECT]: There is already an instance of Cmn65's Raiding Terminal! Disabling and moving into storage in game.ServerStorage.TerminalBackups.")
+			Print(">>[INJECT]: There is already an instance of Cmn65's Raiding Terminal! Disabling and moving into storage in game.ServerStorage.TerminalBackups.")
 			if game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui") then game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui").Parent = game.ServerScriptService:FindFirstChild(modelName) end
 			if game.ServerStorage:FindFirstChild("TerminalBackups") then
 				game.ServerScriptService:FindFirstChild(modelName).Disabled = true
@@ -204,17 +257,17 @@ function INJECT_TERMINAL()
 		
 		wait(0.1)
 		--// Insert new updated Terminal
-		print(">>[INJECT]: Downloading latest version of the terminal...")
+		Print(">>[INJECT]: Downloading latest version of the terminal...")
 		local newModel = game:GetService("InsertService"):LoadAsset(4879413218)
 		wait(0.2)
-		print(">>[INJECT]: Checking for correct contents...")
-		if newModel:FindFirstChild(modelName) == nil or newModel:FindFirstChild("Cmn65's Raiding Terminal Gui") == nil then error("[INJECT]: Failed - Could not find expected contents. This is usually due to a mis-match in naming. PM Cmn65 to get this resolved!") end
+		Print(">>[INJECT]: Checking for correct contents...")
+		if newModel:FindFirstChild(modelName) == nil or newModel:FindFirstChild("Cmn65's Raiding Terminal Gui") == nil then Error("[INJECT]: Failed - Could not find expected contents. This is usually due to a mis-match in naming. PM Cmn65 to get this resolved!") end
 		local terminal = newModel:FindFirstChild(modelName)
 		local gui = newModel:FindFirstChild("Cmn65's Raiding Terminal Gui")
-		print(">>[INJECT]: Moving things into position!")
+		Print(">>[INJECT]: Moving things into position!")
 		gui.Parent = game.StarterGui
 		terminal.Parent = game.ServerScriptService
-		print(">>[INJECT]: Attempting to write to contents of terminal.Configuration. This is where the fun begins...")
+		Print(">>[INJECT]: Attempting to write to contents of terminal.Configuration. This is where the fun begins...")
 		wait(math.random(1, 1.5))
 		terminal.Configuration:Destroy()
 		local configModule = Instance.new("ModuleScript", terminal)
@@ -223,36 +276,36 @@ function INJECT_TERMINAL()
 		BUILD_SOURCE_CODE()
 		configModule.Source = CONFIGURATION_SOURCE_CODE
 		CONFIGURATION_SOURCE_CODE = "--// Cmn65's Raiding Terminal\n-->> Configuration File\n-->> Edit this file to your needs and then have fun raiding!!\n\n-- See Documentation/Install for more detailed information\n\n-->> This configuration file as generated by the plugin! Make sure the configuration file is correct! \n\n\n\nlocal configuration = {"
-		print(">>[INJECT]: Configuration module generated and placed into the terminal script.")
-		print(">>[INJECT]: You are READY! Please make sure you proof read your configuration script to make sure it is correct! Press the Open Configuration button in the plugins menu to see your current configuration!")
-		print(">>Cleaning up...")
+		Print(">>[INJECT]: Configuration module generated and placed into the terminal script.")
+		Print(">>[INJECT]: You are READY! Please make sure you proof read your configuration script to make sure it is correct! Press the Open Configuration button in the plugins menu to see your current configuration!")
+		Print(">>Cleaning up...")
 		wait(0.1)
 		updateVersionHeader()
 		newModel:Destroy()
-		warn("Cmn65's Raiding Terminal is ready for use! Thank you very much for using, and please PM me with any bugs concerning this plugin or the model itself! Or tweet @roblox_cmn65!")
+		Warn("Cmn65's Raiding Terminal is ready for use! Thank you very much for using, and please PM me with any bugs concerning this plugin or the model itself! Or tweet @roblox_cmn65!")
 	end
-	print()
+	Print("")
 end
 configButtons.injectButton.MouseButton1Down:connect(INJECT_TERMINAL)
 
 function removeTerminal()
-	print()
-	print("[REMOVE]: Removing terminal...")
+	Print("")
+	Print("[REMOVE]: Removing terminal...")
 	if game.ServerScriptService:FindFirstChild(modelName) then
 		game.ServerScriptService:FindFirstChild(modelName):Destroy()
 	end
 	if game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui") then
 		game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui"):Destroy()
 	end
-	print("[REMOVE]: Terminal removed.")
+	Print("[REMOVE]: Terminal removed.")
 	updateVersionHeader()
-	print()
+	Print("")
 end
 configButtons.removeButton.MouseButton1Down:connect(removeTerminal)
 
 function updateTerminal()
-	print()
-	print("[UPDATE]: Updating raid terminal...")
+	Print("")
+	Print("[UPDATE]: Updating raid terminal...")
 	local newModel = game:GetService("InsertService"):LoadAsset(4879413218)
 	local oldModel = game.ServerScriptService:FindFirstChild(modelName)
 	if oldModel ~= nil then
@@ -265,23 +318,23 @@ function updateTerminal()
 			local oldConfig = oldModel.Configuration:clone()
 			local newVersionAvailable = false
 						
-			print("[UPDATE]: Checking version information...")
-			if newBuildInfo.version > oldBuildInfo.version then newVersionAvailable = true print(">>	Updating from MAJOR version " .. oldBuildInfo.version .. "-" .. oldBuildInfo.build .. " --> " .. newBuildInfo.version .. "-" .. newBuildInfo.build) end -- new major
-			if newBuildInfo.version == oldBuildInfo.version and newBuildInfo.build > oldBuildInfo.build then newVersionAvailable = true print(">>	Updating from MINOR version " .. oldBuildInfo.version .. "-" .. oldBuildInfo.build .. " --> " .. newBuildInfo.version .. "-" .. newBuildInfo.build) end -- new minor
+			Print("[UPDATE]: Checking version information...")
+			if newBuildInfo.version > oldBuildInfo.version then newVersionAvailable = true Print(">>	Updating from MAJOR version " .. oldBuildInfo.version .. "-" .. oldBuildInfo.build .. " --> " .. newBuildInfo.version .. "-" .. newBuildInfo.build) end -- new major
+			if newBuildInfo.version == oldBuildInfo.version and newBuildInfo.build > oldBuildInfo.build then newVersionAvailable = true Print(">>	Updating from MINOR version " .. oldBuildInfo.version .. "-" .. oldBuildInfo.build .. " --> " .. newBuildInfo.version .. "-" .. newBuildInfo.build) end -- new minor
 			
 			if newVersionAvailable == true then
 				if newConfigurationModule.config_version ~= oldConfigurationModule.config_version then
-					print("[UPDATE]: Configuration version mismatch. Terminal update will continue but please edit the new configuration file when you are done, new features have been added!")
+					Print("[UPDATE]: Configuration version mismatch. Terminal update will continue but please edit the new configuration file when you are done, new features have been added!")
 					wait(1.3)
 					oldConfig.Name = "Configuration.version".. tostring(oldConfigurationModule.config_version) ..".old"
 					oldConfig.Parent = newTerminal
 				else
-					print("[UPDATE]: Copying old configuration file to new terminal...")
+					Print("[UPDATE]: Copying old configuration file to new terminal...")
 					newTerminal['Configuration']:Destroy()
 					oldConfig.Parent = newTerminal
 				end
 				wait(0.02)
-				print("[UPDATE]: Backing up old terminal...")
+				Print("[UPDATE]: Backing up old terminal...")
 				if game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui") then game.StarterGui:FindFirstChild("Cmn65's Raiding Terminal Gui").Parent = game.ServerScriptService:FindFirstChild(modelName) end
 				
 				if game.ServerStorage:FindFirstChild("TerminalBackups") then
@@ -293,37 +346,37 @@ function updateTerminal()
 					oldModel.Parent = game.ServerStorage.TerminalBackups
 				end
 				wait(0.1)
-				print("[UPDATE]: Moving new terminal into place...")
+				Print("[UPDATE]: Moving new terminal into place...")
 				newTerminal.Parent = game.ServerScriptService
 				newGui.Parent = game.StarterGui
 				wait()
-				print("[UPDATE]: Validating update...")
+				Print("[UPDATE]: Validating update...")
 				local errors = ""
 				if oldModel.Parent ~= game.ServerStorage.TerminalBackups then errors = errors .. "\nBackup failed. Old terminal is missing from the TerminalBackups folder." end
 				if newTerminal.Parent ~= game.ServerScriptService then errors = errors .. "\nThe new terminal wasn't in the correct service." end
 				if newGui.Parent ~= game.StarterGui then errors = errors .. "\nThe new Gui wasn't in the correct service." end
-				if errors ~= "" then print("[UPDATE]: The following problems have occured during the update. The script has attempted to fix them however they may not be fixed. Please double check!" .. errors) end
+				if errors ~= "" then Print("[UPDATE]: The following problems have occured during the update. The script has attempted to fix them however they may not be fixed. Please double check!" .. errors) end
 				wait(0.05)
-				print("[UPDATE]: Cleaning up...")
+				Print("[UPDATE]: Cleaning up...")
 				newModel:Destroy()
-				if errors == "" then warn("[UPDATE]: Complete with no errors") else warn("[UPDATE]: Complete with some errors. Please verify update/installation!") end
+				if errors == "" then Warn("[UPDATE]: Complete with no errors") else Warn("[UPDATE]: Complete with some errors. Please verify update/installation!") end
 				errors = ""
 				updateVersionHeader()
 			else
 				newModel:Destroy()
-				warn("[UPDATE]: Error: No available updates.")
+				Warn("[UPDATE]: Error: No available updates.")
 			end
 		end
 	else
 		if oldModel == nil then
-			warn("[UPDATE]: ERROR: You do not havea terminal to update. Please inject a new terminal.")	
+			Warn("[UPDATE]: ERROR: You do not havea terminal to update. Please inject a new terminal.")	
 		elseif oldModel:FindFirstChild("Configuration") == nil then
-			warn("[UPDATE]: ERROR: No configuration file found. Please inject a new terminal.")
+			Warn("[UPDATE]: ERROR: No configuration file found. Please inject a new terminal.")
 		else
-			warn("[UPDATE]: ERROR: An unknown error occured. Please try this again, if the problem persists please follow this link and file a bug report: https://www.roblox.com/messages/compose?recipientId=16568982")
+			Warn("[UPDATE]: ERROR: An unknown error occured. Please try this again, if the problem persists please follow this link and file a bug report: https://www.roblox.com/messages/compose?recipientId=16568982")
 		end
 	end
-	print()
+	Print("")
 end
 configButtons.updateButton.MouseButton1Down:connect(updateTerminal)
 
@@ -332,8 +385,6 @@ script.DescendantRemoving:Connect(function()
 end)
 
 --// Help Gui Functions and Code
-
---// Nothing in this portion of the script will be ran until the helpgui is opened for the first time. Then this code will be activated. 
 local uigl = setupFrame.ScrollingFrame.teamColorSelectionFrame.UIGridLayout
 uigl.FillDirectionMaxCells = 16
 uigl.CellPadding = UDim2.new(0,0,0,0)
@@ -409,14 +460,14 @@ end)
 guiButtons.informationButton.MouseLeave:Connect(function()
 	changeColor(guiButtons.informationButton, false)
 end)
-guiButtons.setupButton.MouseEnter:Connect(function()
+guiButtons.setupButton.MouseLeave:Connect(function()
 	changeColor(guiButtons.setupButton, false)
 end)
 
 --// Handle going to Main Menu
 function goToMainMenu()
 	for i, v in pairs(guiButtons) do
-		print(v.Name .. " making visible")
+		Print(v.Name .. " making visible")
 		v.Visible = true
 	end
 	mainFrame.menu.Visible = false
@@ -431,7 +482,7 @@ mainFrame.menu2.MouseButton1Down:connect(goToMainMenu)
 
 function frameOpening(frameOpenObject)
 	for i, v in pairs(guiButtons) do
-		print(v.Name .. " making invisible")
+		Print(v.Name .. " making invisible")
 		v.Visible = false
 	end
 	mainFrame.menu.Visible = true
@@ -468,12 +519,10 @@ end)
 guiButtons.setupButton.MouseButton1Down:Connect(function()
 	frameOpening()
 	guiFrames.setupFrame.Visible = true
-	mainFrame.subtitle.Text = "Setup CRT"
+	mainFrame.subtitle.Text = "Open ROBLOX Studio output for error messages!"
 	mainFrame.menu.Visible = false
 	mainFrame.menu2.Visible = true
 end)
-
-
 
 
 
@@ -490,8 +539,7 @@ end)
 print([[==================================================================================================
 ============================[ Cmn65's Raiding Terminal Plugin (Version ]] .. pluginVersion .. [[]) ]============================
 ==================================================================================================
-!-- BETA: This version was stable enough to be released to the public however some issues may arrise!
->> Please report issues to cmn65 through PM on ROBLOX or through a tweet @roblox_cmn65 on Twitter!
+!-- BETA: The plugin is deemed stable by the developer however bugs/errors are to be expected --!
 
 PLUGIN RIBBON:
 >> Click the GEAR icon to open the current configuration script
@@ -500,8 +548,7 @@ PLUGIN RIBBON:
 SOURCE CODE:
 >> https://github.com/cmn65/Cmn65-Raiding-Terminal
 
-SUPPORT/BUGS:
->> Documentation/Install Script in the Terminal Model | Help Gui
+HELP SQUASH BUGS:
 >> https://www.roblox.com/messages/compose?recipientId=16568982
 >> https://www.twitter.com/roblox_cmn65
 ==================================================================================================  ]])
